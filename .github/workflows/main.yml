@@ -26,8 +26,18 @@ jobs:
 
     - name: Set RDP Password
       run: |
-        $Password = ConvertTo-SecureString ${{ secrets.RDP_PASSWORD }} -AsPlainText -Force
-        Set-LocalUser -Name "runneradmin" -Password $Password
+        $Password = ${{ secrets.RDP_PASSWORD }}
+        # 验证密码复杂性
+        if ($Password.Length -lt 12 -or 
+            -not ($Password -match '[A-Z]') -or 
+            -not ($Password -match '[a-z]') -or 
+            -not ($Password -match '\d') -or 
+            -not ($Password -match '[^A-Za-z0-9]')) {
+            Write-Error "密码必须至少包含12个字符，并包含大小写字母、数字和特殊字符"
+            exit 1
+        }
+        $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+        Set-LocalUser -Name "runneradmin" -Password $SecurePassword
         Write-Host "RDP 密码已设置完成"
 
     - name: Start Cloudflare Tunnel
