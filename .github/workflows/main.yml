@@ -42,9 +42,27 @@ jobs:
 
     - name: Start Cloudflare Tunnel
       run: |
-        .\cloudflared.exe service install ${{ secrets.TUNNEL_TOKEN }}
+        $TunnelToken = "${{ secrets.TUNNEL_TOKEN }}"
+        # 验证Token格式
+        if (-not ($TunnelToken -match '^eyJ')) {
+            Write-Error "Tunnel Token格式无效，必须以'eyJ'开头"
+            exit 1
+        }
+        Write-Host "正在安装Cloudflare Tunnel服务..."
+        .\cloudflared.exe service install $TunnelToken
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Cloudflare Tunnel服务安装失败"
+            exit 1
+        }
+        Write-Host "等待服务启动..."
+        Start-Sleep -Seconds 5
         Start-Service cloudflared
-        Write-Host "Cloudflare Tunnel 服务已启动"
+        if ($?) {
+            Write-Host "Cloudflare Tunnel服务已成功启动"
+        } else {
+            Write-Error "Cloudflare Tunnel服务启动失败"
+            exit 1
+        }
 
     - name: Keep Alive
       run: |
