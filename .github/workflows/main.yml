@@ -24,8 +24,22 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name 'UserAuthentication' -Value 1
 
-    - name: Create Tunnel
+    - name: Set RDP Password
       run: |
-        .\cloudflared.exe tunnel --url tcp://localhost:3389
-      env:
-        TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+        $Password = ConvertTo-SecureString ${{ secrets.RDP_PASSWORD }} -AsPlainText -Force
+        Set-LocalUser -Name "runneradmin" -Password $Password
+        Write-Host "RDP 密码已设置完成"
+
+    - name: Start Cloudflare Tunnel
+      run: |
+        .\cloudflared.exe service install ${{ secrets.TUNNEL_TOKEN }}
+        Start-Service cloudflared
+        Write-Host "Cloudflare Tunnel 服务已启动"
+
+    - name: Keep Alive
+      run: |
+        Write-Host "远程桌面连接信息："
+        Write-Host "用户名: runneradmin"
+        Write-Host "密码: 请使用在GitHub Secrets中设置的RDP_PASSWORD"
+        Write-Host "保持连接活跃中..."
+        while($true) { Start-Sleep -Seconds 60 }
