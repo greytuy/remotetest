@@ -26,7 +26,7 @@ jobs:
 
     - name: Set RDP Password
       run: |
-        $Password = ${{ secrets.RDP_PASSWORD }}
+        $Password = "${{ secrets.RDP_PASSWORD }}"
         # 验证密码复杂性
         if ($Password.Length -lt 12 -or 
             -not ($Password -match '[A-Z]') -or 
