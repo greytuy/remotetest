@@ -1,0 +1,31 @@
+name: Windows RDP Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Windows RDP Setup
+    runs-on: windows-latest
+    timeout-minutes: 9999
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Cloudflared
+      run: |
+        Invoke-WebRequest -Uri https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
+        .\cloudflared.exe --version
+
+    - name: Enable RDP Access
+      run: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name 'fDenyTSConnections' -Value 0
+        Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name 'UserAuthentication' -Value 1
+
+    - name: Create Tunnel
+      run: |
+        .\cloudflared.exe tunnel --url tcp://localhost:3389
+      env:
+        TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
