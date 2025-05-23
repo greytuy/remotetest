@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDP Control Panel</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"; margin: 0; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; width: 90%; max-width: 450px; }
+        h1 { color: #1c1e21; margin-bottom: 25px; font-size: 24px; }
+        .controls button { 
+            padding: 12px 18px; 
+            margin: 8px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls button:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        #startButton { background-color: #42b72a; color: white; }
+        #startButton:hover { background-color: #36a420; }
+        #stopButton { background-color: #fa383e; color: white; }
+        #stopButton:hover { background-color: #e02c32; }
+        #statusButton { background-color: #1877f2; color: white; }
+        #statusButton:hover { background-color: #166fe5; }
+        .status-box { 
+            margin-top: 25px; 
+            padding: 18px; 
+            border: 1px solid #dddfe2; 
+            border-radius: 6px; 
+            background-color: #f7f7f7; 
+            min-height: 60px;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .status-box p { margin: 8px 0; font-size: 14px; }
+        .status-box strong { color: #333; }
+        .status-box a { color: #1877f2; text-decoration: none; }
+        .status-box a:hover { text-decoration: underline; }
+        .loader { 
+            border: 4px solid #e9e9e9; 
+            border-top: 4px solid #1877f2; 
+            border-radius: 50%; 
+            width: 24px; 
+            height: 24px; 
+            animation: spin 1s linear infinite; 
+            display: none; 
+            margin: 15px auto 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message { color: #fa383e; font-weight: 500; }
+        .success-message { color: #42b72a; font-weight: 500; }
+        .info-message { color: #1877f2; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RDP Session Control</h1>
+        <div class="controls">
+            <button id="startButton">Start RDP Session</button>
+            <button id="stopButton">Stop RDP Session</button>
+            <button id="statusButton">Refresh Status</button>
+        </div>
+        <div id="loader" class="loader"></div>
+        <div class="status-box" id="statusBox">
+            <p>Click "Refresh Status" to get the current RDP session status.</p>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js" defer></script>
+</body>
+</html>
