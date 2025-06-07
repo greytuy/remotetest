@@ -16,6 +16,7 @@ import {
   RefreshCw
 } from 'lucide-react'
 import Cookies from 'js-cookie'
+import RemoteDesktop from './components/RemoteDesktop'
 
 interface WorkflowRun {
   id: number
@@ -44,6 +45,8 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false)
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [remoteDesktopConnected, setRemoteDesktopConnected] = useState(false)
+  const [tunnelUrl, setTunnelUrl] = useState<string>('')
 
   useEffect(() => {
     const savedToken = Cookies.get('github_token')
@@ -327,6 +330,14 @@ const startWorkflow = async () => {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="lg:col-span-2">
+            <RemoteDesktop 
+              tunnelUrl={tunnelUrl}
+              isConnected={workflowStatus === 'running'}
+              onConnectionChange={setRemoteDesktopConnected}
+            />
           </div>
 
           <div className="lg:col-span-2 bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
