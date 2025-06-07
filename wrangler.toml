@@ -1,0 +1,6 @@
+name = "github-actions-controller"
+main = "out/_worker.js"
+compatibility_date = "2023-12-07"
+
+[site]
+bucket = "./out" 
