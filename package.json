@@ -1,0 +1,32 @@
+{
+  "name": "github-actions-controller",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "download-novnc": "curl -L https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.tar.gz | tar -xz -C public && mv public/noVNC-1.6.0 public/novnc"
+  },
+  "dependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "autoprefixer": "^10",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.292.0",
+    "next": "14.0.0",
+    "postcss": "^8",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwindcss": "^3",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.0",
+    "wrangler": "^4.19.1"
+  }
+}
