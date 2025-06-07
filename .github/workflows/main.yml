@@ -13,10 +13,18 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Setup Cloudflared
+    - name: Install and Configure Guacamole
       run: |
-        Invoke-WebRequest -Uri https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
-        .\cloudflared.exe --version
+        # 安装 VNC Server (用于 Guacamole 连接)
+        choco install tightvnc -y
+        # 配置 VNC 服务
+        vncserver :1 -geometry 1920x1080 -depth 24
+        
+        # 安装 Cloudflare Tunnel
+        Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile "cloudflared.exe"
+        
+        # 启动隧道 (暴露 VNC 端口)
+        .\cloudflared.exe tunnel --url tcp://localhost:5901
 
     - name: Enable RDP Access
       run: |
