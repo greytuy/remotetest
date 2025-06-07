@@ -99,44 +99,32 @@ export default function Home() {
   }, [githubToken, repositoryName])
 
 const startWorkflow = async () => {
-   if (!githubToken || !repositoryName) {
-    alert('Please configure GitHub Token and repository name first')
-     return
-   }
-
-  // Validate repository name format
-const startWorkflow = async () => {
-   if (!githubToken || !repositoryName) {
-    alert('Please configure GitHub Token and repository name first')
-     return
-   }
-
-  // Validate repository name format
-  if (!/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repositoryName)) {
-    alert('Invalid repository name format. Use: owner/repository')
-    return
-  }
-
-   setIsLoading(true)
-   try {
-     const response = await fetch(`https://api.github.com/repos/${repositoryName}/actions/workflows/main.yml/dispatches`, {
-       method: 'POST',
-       headers: {
-        'Authorization': `Bearer ${githubToken}`,
-         'Accept': 'application/vnd.github.v3+json',
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({
-         ref: 'main'
-       })
-     })
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(`GitHub API error: ${response.status} - ${errorData.message || response.statusText}`)
+    if (!githubToken || !repositoryName) {
+      alert('Please configure GitHub Token and repository name first')
+      return
     }
-      throw new Error(`GitHub API error: ${response.status} - ${errorData.message || response.statusText}`)
+
+    // Validate repository name format
+    if (!/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repositoryName)) {
+      alert('Invalid repository name format. Use: owner/repository')
+      return
     }
+
+    setIsLoading(true)
+    try {
+      const response = await fetch(`https://api.github.com/repos/${repositoryName}/actions/workflows/main.yml/dispatches`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${githubToken}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ref: 'main'
+        })
+      })
+
+      if (response.ok) {
         setWorkflowStatus('running')
         setConnectionInfo(prev => ({
           ...prev,
@@ -144,7 +132,8 @@ const startWorkflow = async () => {
         }))
         setTimeout(fetchWorkflowStatus, 3000)
       } else {
-        throw new Error('启动失败')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(`GitHub API error: ${response.status} - ${errorData.message || response.statusText}`)
       }
     } catch (error) {
       console.error('启动workflow失败:', error)
